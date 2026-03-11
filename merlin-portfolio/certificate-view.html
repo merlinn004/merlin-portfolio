@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate View</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #1c1009;
+            --accent: #6B1212;
+            --edge: #eadfda;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "DM Sans", "Segoe UI", sans-serif;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        .viewer {
+            width: min(1100px, 100%);
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0 0 16px;
+            font-size: clamp(1.15rem, 2.3vw, 1.65rem);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .certificate-image {
+            width: min(100%, 950px);
+            max-height: 84vh;
+            object-fit: contain;
+            border: 1px solid var(--edge);
+            box-shadow: 0 12px 30px rgba(107, 18, 18, 0.15);
+            background: #fff;
+        }
+
+        .empty {
+            border: 1px dashed var(--edge);
+            padding: 22px;
+            font-size: 0.95rem;
+            color: #5c3d2e;
+            background: #fff8f5;
+        }
+    </style>
+</head>
+<body>
+    <main class="viewer">
+        <h1 id="certTitle">Certificate</h1>
+        <img id="certImage" class="certificate-image" alt="Certificate image">
+        <div id="emptyState" class="empty" hidden>
+            Certificate image not found. Add the image file to assets/images and keep the same filename used in the link.
+        </div>
+    </main>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const title = params.get("title") || "Certificate";
+        const imagePath = params.get("img");
+
+        const titleEl = document.getElementById("certTitle");
+        const imageEl = document.getElementById("certImage");
+        const emptyEl = document.getElementById("emptyState");
+
+        titleEl.textContent = title;
+
+        if (!imagePath) {
+            imageEl.hidden = true;
+            emptyEl.hidden = false;
+        } else {
+            imageEl.src = imagePath;
+            imageEl.alt = title;
+            imageEl.addEventListener("error", () => {
+                imageEl.hidden = true;
+                emptyEl.hidden = false;
+            });
+            imageEl.addEventListener("load", () => {
+                imageEl.hidden = false;
+                emptyEl.hidden = true;
+            });
+        }
+    </script>
+</body>
+</html>
